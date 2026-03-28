@@ -9,4 +9,6 @@ public interface AssetService {
     List<Asset> getAllAssets();
     Asset createAsset(Asset asset);
     void assignAssetToUser(Long assetId, Long userId);
+    void assignAsset(Long assetId, Long userId);
+    void returnAsset(Long assetId);
 }

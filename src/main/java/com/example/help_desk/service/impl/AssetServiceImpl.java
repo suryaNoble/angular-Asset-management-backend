@@ -2,9 +2,12 @@ package com.example.help_desk.service.impl;
 
 
 import com.example.help_desk.entity.Asset;
+import com.example.help_desk.entity.User;
 import com.example.help_desk.repository.AssetRepository;
+import com.example.help_desk.repository.UserRepository;
 import com.example.help_desk.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
@@ -18,6 +21,9 @@ public class AssetServiceImpl implements AssetService {
 
     @Autowired
     private AssetRepository assetRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -39,5 +45,25 @@ public class AssetServiceImpl implements AssetService {
                 .setParameter("assetId", assetId)
                 .setParameter("userId", userId)
                 .executeUpdate();
+    }
+    
+    @Override
+    public void assignAsset(Long assetId, Long userId) {
+        // Get the Admin/Technician ID from the JWT Token
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User admin = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Admin user not found"));
+
+        // Call the Stored Procedure
+        assetRepository.assignAsset(assetId, userId, admin.getId());
+    }
+    
+    @Override
+    public void returnAsset(Long assetId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User admin = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+
+        assetRepository.returnAsset(assetId, admin.getId());
     }
 }

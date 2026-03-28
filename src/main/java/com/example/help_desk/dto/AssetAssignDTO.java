@@ -9,8 +9,10 @@ public class AssetAssignDTO {
     public Long getAssetId() {
         return assetId;
     }
+    public void setAssetId(Long assetId) { this.assetId = assetId; }
 
     public Long getUserId() {
         return userId;
     }
+    public void setUserId(Long userId) { this.userId = userId; }
 }

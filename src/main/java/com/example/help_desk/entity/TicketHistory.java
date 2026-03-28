@@ -28,6 +28,8 @@ package com.example.help_desk.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @Table(name = "TicketHistory")
 public class TicketHistory {
@@ -38,8 +40,8 @@ public class TicketHistory {
 
     private String status;
 
+    @CreationTimestamp
     private LocalDateTime changedAt;
-
     @ManyToOne
     @JoinColumn(name = "TicketId", referencedColumnName = "Id")
     private Ticket ticket;

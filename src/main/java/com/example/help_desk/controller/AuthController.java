@@ -18,7 +18,7 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequestDTO request) {
         authService.register(request);
-        return "User registered successfully";
+        return "registeration succesfull go login";
     }
 
     @PostMapping("/login")

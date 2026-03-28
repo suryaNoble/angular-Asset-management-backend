@@ -30,6 +30,8 @@ package com.example.help_desk.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @Table(name = "Tickets")
 public class Ticket {
@@ -42,10 +44,13 @@ public class Ticket {
 
     @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
+    
+    @CreationTimestamp 
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     private String status;
 
-    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "CreatedBy", referencedColumnName = "Id")

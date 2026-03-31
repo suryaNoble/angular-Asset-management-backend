@@ -12,4 +12,6 @@ public interface TicketService {
     List<Ticket> getAllTickets();
     List<Ticket> searchTickets(String keyword);
     List<TicketHistory> getTicketHistory(Long ticketId);
+    List<Ticket> getTicketsByUserId(Long userId);
+    List<TicketHistory> getAllTicketHistories();
 }

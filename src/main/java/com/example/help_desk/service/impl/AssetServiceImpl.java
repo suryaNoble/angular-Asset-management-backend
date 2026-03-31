@@ -66,4 +66,12 @@ public class AssetServiceImpl implements AssetService {
 
         assetRepository.returnAsset(assetId, admin.getId());
     }
+    
+    @Override
+    public List<Asset> getAssetsByUserId(Long userId) {
+        // Calling the exact method we just created in the repository
+        return assetRepository.findByAssignedToId(userId);
+    }
+    
+    
 }

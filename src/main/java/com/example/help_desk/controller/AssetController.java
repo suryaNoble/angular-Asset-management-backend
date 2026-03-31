@@ -22,6 +22,12 @@ public class AssetController {
     public List<Asset> getAllAssets() {
         return assetService.getAllAssets();
     }
+    
+    @GetMapping("/user/{userId}")
+    public List<Asset> getAssetsByUser(@PathVariable Long userId) {
+        return assetService.getAssetsByUserId(userId);
+    }
+    
 
     @PostMapping
     public Asset createAsset(@RequestBody Asset asset) {

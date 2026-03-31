@@ -71,6 +71,18 @@ public class TicketServiceImpl implements TicketService {
     }
     
     @Override
+    public List<Ticket> getTicketsByUserId(Long userId) {
+        return ticketRepository.findByCreatedById(userId);
+    }
+    
+    @Override
+    public List<TicketHistory> getAllTicketHistories() {
+        // Optional: You could use Sort.by(Sort.Direction.DESC, "changedAt") 
+        // inside findAll() if you want the newest records at the top!
+        return ticketHistoryRepository.findAll();
+    }
+    
+    @Override
     public List<TicketHistory> getTicketHistory(Long ticketId) {
         return ticketHistoryRepository.findByTicketIdOrderByChangedAtDesc(ticketId);
     }

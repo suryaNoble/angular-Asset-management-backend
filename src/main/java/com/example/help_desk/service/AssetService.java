@@ -11,4 +11,6 @@ public interface AssetService {
     void assignAssetToUser(Long assetId, Long userId);
     void assignAsset(Long assetId, Long userId);
     void returnAsset(Long assetId);
+    List<Asset> getAssetsByUserId(Long userId);
+    
 }

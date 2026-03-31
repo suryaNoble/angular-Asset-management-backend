@@ -10,16 +10,24 @@ import com.example.help_desk.repository.UserRepository;
 import com.example.help_desk.service.TicketService;
 
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
 
-    private final TicketService ticketService;
-    private final UserRepository userRepository;
+//    private final TicketService ticketService;
+	@Autowired
+    private TicketService ticketService;
+	private final UserRepository userRepository;
     private final AssetRepository assetRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public TicketController(TicketService ticketService,
                             UserRepository userRepository,
@@ -51,10 +59,15 @@ public class TicketController {
     
     //updating status of ticket for ticket lifecycle
     @PatchMapping("/{id}/status")
-    public Ticket updateTicketStatus(@PathVariable Long id, @RequestBody String status) {
-        // Note: If sending raw text in Postman, status will include quotes. 
-        // It's often safer to use a small DTO or a RequestParam.
-        return ticketService.updateTicketStatus(id, status);
+    public ResponseEntity<?> updateTicketStatus(@PathVariable Long id, @RequestBody String status) {
+    	Ticket updatedTicket = ticketService.updateTicketStatus(id, status);
+    	String message = "Your ticket #" + id + " (" + updatedTicket.getTitle() + ") is now " + status;
+    	Integer userId = updatedTicket.getCreatedBy().getId();
+        messagingTemplate.convertAndSend("/queue/notifications/" + userId, message);
+
+        return ResponseEntity.ok(Map.of("message", "Status updated successfully"));
+        
+    
     }
 
     @GetMapping
@@ -62,10 +75,22 @@ public class TicketController {
         return ticketService.getAllTickets();
     }
     
+    @GetMapping("/user/{userId}")
+    public List<Ticket> getTicketsByUser(@PathVariable Long userId) {
+        return ticketService.getTicketsByUserId(userId);
+    }
+    
     @GetMapping("/{id}/history")
     public List<TicketHistory> getTicketHistory(@PathVariable Long id) {
         return ticketService.getTicketHistory(id);
     }
+    
+    @GetMapping("/all-history")
+    public List<TicketHistory> getAllTicketHistory() {
+        return ticketService.getAllTicketHistories();
+    }
+    
+    
 
     @GetMapping("/search")
     public List<Ticket> searchTickets(@RequestParam String keyword) {
